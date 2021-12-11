@@ -49,7 +49,7 @@ The Velomatch stock broker enables retailers to provide semi-real time updates f
 
 ## Data Format
 
-The business supports representing the data specified in one of three formats. JSON, XML and Microsoft Excel. 
+The business supports representing the data specified in one of three formats. JSON, XML and CSV. 
 
 ### JSON
 
@@ -72,13 +72,13 @@ JSON (JavaScript Object Notation) is an open standard file format and data inter
 "facility": [
     {
         "facilitycode": "f001",  
-        "partial": false,
+        "partial": False,
         "stock": { ... }, // See stock below
         "forecast": { ... }, // See forecast below
     },
     {
         "facilitycode": "f002",  
-        "partial": true,
+        "partial": True,
         "stock": { ... }, // See stock below
         "forecast": { ... }, // See forecast below
     },
@@ -131,7 +131,7 @@ JSON (JavaScript Object Notation) is an open standard file format and data inter
     "facility": [
         {
             "facilitycode": "f001",
-            "partial": false,
+            "partial": False,
             "stock": { 
                 "unit": [
                     {
@@ -163,7 +163,7 @@ JSON (JavaScript Object Notation) is an open standard file format and data inter
         },
         {
             "facilitycode": "f002", 
-            "partial": true,
+            "partial": True,
             "stock": { 
                 "unit": [
                     {
@@ -292,61 +292,91 @@ eXtensible Markup Language (XML) is a markup language that defines a set of rule
 </Velomatch>
 ```
 
-### Microsoft Excel
+### CSV
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+A comma-separated values (CSV) file is a delimited text file that uses a comma to separate values. Each line of the file is a data record. Each record consists of one or more fields, separated by commas. The use of the comma as a field separator is the source of the name for this file format. 
 
-## Connection 
+As CSV is a flat file format it is not possible to nest objects within one another as per the JSON and XML formats. This in turn means there is a significant amount of redundant data sent through this protocol. Velomatch therefore recommends using one of the more object orientated formats. 
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+Text qualifiers within the CSV file should use the double or single quotes format. Date and time formats should use universal time format (UTC), or shall be assumed to be within the United Kingdom (London) timezone following the United Kingdom day-month-year hour-minute-second format. The use of a header is optional and is detected when the data is processed. 
 
-### RESTfull
+Line 1 (and 2 if a header is used) shall include end point authentication information to identify the data source. 
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+```csv
+username,password,DateTime
+"DistributerFoo","PasswordBar",2021-11-24T14:40:40+0000
+```
+Line 2 (or three) shall represent the stock information. The first set of attributes determine the facility, sku and current stock quantity which is available for sale. 
 
-### SOAP
+Should any deliveries be forecasted, one or more key value pairs of ```datetime``` and ```quantity``` shall be given representing a unique delivery. There is no limit to the number of date time and quantity key value pairs which can be sent and the order is not important. There is no requirement to have the key value pair headers for the total amount of forecasted deliveries. 
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+```csv
+facilitycode,sku,quantity,datetime,quantity,datetime,quantity
+"f001","123-456-789",4
+"f001","223-456-789",7
+"f001","323-456-789",6
+"f001","324-456-789",0,2021-11-25T14:40:40+0000,4,2021-11-29T10:00:40+0000,2
+"f001","423-456-789",0,2021-11-25T14:40:40+0000,4
+"f001","523-456-789",0,2021-11-25T14:40:40+0000,7
+"f001","623-456-789",0,2021-11-25T14:40:40+0000,6
+```
 
-### FTP
+Example without headers: 
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+```csv
+"DistributerFoo","PasswordBar",2021-11-24T14:40:40+0000
+"f001","123-456-789",4
+"f001","223-456-789",7
+"f001","323-456-789",6
+"f001","324-456-789",0,2021-11-25T14:40:40+0000,4,2021-11-29T10:00:40+0000,2
+"f001","423-456-789",0,2021-11-25T14:40:40+0000,4
+"f001","523-456-789",0,2021-11-25T14:40:40+0000,7
+"f001","623-456-789",0,2021-11-25T14:40:40+0000,6
+```
 
-### Email
+File example with headers: 
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+```csv
+username,password,DateTime
+"DistributerFoo","PasswordBar",2021-11-24T14:40:40+0000
+facilitycode,sku,quantity,datetime,quantity,datetime,quantity
+"f001","123-456-789",4
+"f001","223-456-789",7
+"f001","323-456-789",6
+"f001","324-456-789",0,2021-11-25T14:40:40+0000,4,2021-11-29T10:00:40+0000,2
+"f001","423-456-789",0,2021-11-25T14:40:40+0000,4
+"f001","523-456-789",0,2021-11-25T14:40:40+0000,7
+"f001","623-456-789",0,2021-11-25T14:40:40+0000,6
+```
 
-### Web Form
+## Protocol 
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+In the world of technology, there are vast numbers of users' communicating with different devices in different languages. That also includes many ways in which they transmit data along with the different software they implement. So, communicating worldwide will not be possible if there were no fixed 'standards' that will govern the way user communicates for data as well as the way our devices treat those data. Here we will be discussing these standard set of rules.
 
-## Data Security
+Protocols which are set of rules that help in governing the way a particular technology will function for communication. In other words, it can be said that the protocols are digital languages implemented in the form of networking algorithms. There are different networks and network protocols, user's use while surfing.
 
-Velomatch takes data security very seriously and as such requires all data payloads to use asymmetric encryption. Asymmetric Encryption uses two distinct, yet related keys. One key, the Public Key, is used for encryption and the other, the Private Key, is for decryption. As implied in the name, the Private Key is intended to be private so that only the authenticated recipient can decrypt the message.
+### SFTP
 
-Let’s understand this with a simple asymmetric encryption example.
+File Transfer Protocol (FTP) is a communications protocol used to send files from computer to computer, with one of them acting as the server, providing the two have an Internet connection. File Transfer Protocol (SFTP) transfers files security using SSH and encrypted FTP commands to avoid password sniffing and exposing sensitive information in plain text. Secure Shell (SSH) provides a secure channel over an unsecured network by using a client–server architecture, connecting an SSH client application with an SSH server. 
 
-Pretend you’re a spy agency and you need to devise a mechanism for your agents to report in securely. You don’t need two-way communication, they have their orders, you just need regular detailed reports coming in from them. Asymmetric encryption would allow you to create public keys for the agents to encrypt their information and a private key back at headquarters that is the only way to decrypt it all. This provides an impenetrable form of one-way communication.
-
-At the heart of Asymmetric Encryption lies a cryptographic algorithm. This algorithm uses a key generation protocol (a kind of mathematical function) to generate a key pair. Both the keys are mathematically connected with each other. This relationship between the keys differs from one algorithm to another.
-
-The algorithm is basically a combination of two functions – encryption function and decryption function. To state the obvious, the encryption function encrypts the data and decryption function decrypts it.
-
-When you visit any HTTPS website/webpage, your browser establishes Asymmetrically encrypted connection with that website. Your browser automatically derives the public key of the SSL/TLS certificate installed on the website (that’s why it’s called ‘Public Key’). Do you want to see what it looks like? Click the green padlock you see in front of our URL, and go to certificate details. 
-
-Once registered as a data provider, Velomatch shares Public keys to our production environment for registered data providers. The sandbox key is however public and is available here: '''TODO'''
+It is recommended that the following file name format is used: ```[year][month][day][hour][minute][second]-[username].[extension]```. An example csv file name would be: ```20211202-velomatch.csv```.
 
 ## Examples
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+Noun. 1. good example - something to be imitated; "an exemplar of success"; "a model of clarity"; "he is the very model of a modern major general" exemplar, example, model. ideal - the idea of something that is perfect; something that one hopes to attain.
 
 ### Python
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+```python
 
-### Google Colaboratory
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+```
+
+### Jupyter Notebook
+
+The [Jupyter](https://jupyter.org/) Notebook is a web application for creating and sharing documents that contain code, visualizations, and text. It can be used for data science, statistical modeling, machine learning, and much more.
+
+Access the [Velomatch Stock Broker Jupyter Notebook](stockBroker.ipynb).
 
 ## Support
 

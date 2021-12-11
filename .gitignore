@@ -1,3 +1,8 @@
+#temp files. 
+*.json
+*.xml
+*.csv
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

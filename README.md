@@ -365,13 +365,6 @@ It is recommended that the following file name format is used: ```[year][month][
 
 Noun. 1. good example - something to be imitated; "an exemplar of success"; "a model of clarity"; "he is the very model of a modern major general" exemplar, example, model. ideal - the idea of something that is perfect; something that one hopes to attain.
 
-### Python
-
-```python
-
-
-```
-
 ### Jupyter Notebook
 
 The [Jupyter](https://jupyter.org/) Notebook is a web application for creating and sharing documents that contain code, visualizations, and text. It can be used for data science, statistical modeling, machine learning, and much more.
